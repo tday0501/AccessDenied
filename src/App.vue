@@ -5,7 +5,7 @@
       :params="this.paramsObj"
       :ip="this.ipAddress"
     />
-    <DlpPage v-show="this.isDLP.includes('DLP') ? true : false" :params="this.paramsObj" />
+    <DlpPage v-show="this.isDLP.includes('DLP') ? true : false" :params="this.paramsObj" :ip="this.ipAddress"/>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
     return {
       paramsObj: [],
       ipAddress: "",
-      isDLP: "Does not contain",
+      isDLP: "",
     };
   },
   method: {
@@ -34,9 +34,15 @@ export default {
       (acc, key) => ({ ...acc, [key]: params.get(key) }),
       {}
     )
-    this.isDLP = params.get("reasoncode")
 
-    //get IP
+    //check reason code to dynamically display certain page
+    if (params.get("reasoncode") == null){
+      this.isDLP = "Reason not given"
+    } else {
+      this.isDLP = params.get("reasoncode")
+    }
+    
+    //get IP 
     window.RTCPeerConnection =
       window.RTCPeerConnection ||
       window.mozRTCPeerConnection ||
@@ -45,14 +51,15 @@ export default {
       noop = function() {};
     pc.createDataChannel(""); //create a bogus data channel
     pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-    pc.onicecandidate = function(ice) {
-       let ip = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-        ice.candidate.candidate
-      )[1];
-     console.log(ip)
+    pc.onicecandidate = (ice) => {
+      if (ice && ice.candidate && ice.candidate.candidate) {
+        this.ipAddress = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
+        ice.candidate.candidate)[1];
+        pc.onicecandidate = noop;
+      }
     };
-    
   }
+  
 };
 </script>
 
