@@ -1,31 +1,60 @@
 <template>
   <div id="app">
-    <ProxyPage
-      v-show="this.isDLP.includes('DLP') ? false : true"
-      :params="this.paramsObj"
-      :ip="this.ipAddress"
-    />
-    <DlpPage v-show="this.isDLP.includes('DLP') ? true : false" :params="this.paramsObj" :ip="this.ipAddress"/>
+    <div class="main">
+      <div class="logo-container">
+        <img class="logo" src="./assets/FT-Logo.svg" alt="Fifth Third Bank Logo" />
+      </div>
+      <div class="header-container">
+        <p class="header">{{this.header_text}}</p>
+      </div>
+      <p class="subheading">
+        {{this.subheading_text}}
+      </p>
+      <a
+        href="http://intranet.info53.com/directories/policycenter/Portal/default.asp"
+        alt="Bank Policy Center"
+        target="blank"
+      >
+        <button class="FT-btn">Bank Policy Center</button>
+      </a>
+    </div>
+    <div class="form">
+      <proxy-form
+        v-show="this.page === 'Proxy' ? true : false"
+        :params="this.paramsObj"
+        :ip="this.ipAddress"
+      />
+      <dlp-form
+        v-show="this.page === 'DLP' ? true : false"
+        :params="this.paramsObj"
+        :ip="this.ipAddress"
+      />
+      <file-form v-show="this.page === 'File'  ? true : false" />
+    </div>
   </div>
 </template>
 
 <script>
-import ProxyPage from "./components/ProxyPage";
-import DlpPage from "./components/DlpPage";
+import ProxyForm from "./components/ProxyForm";
+import DlpForm from "./components/DlpForm";
+import FileForm from "./components/FileForm";
+
 export default {
   components: {
-    ProxyPage,
-    DlpPage
+    ProxyForm,
+    DlpForm,
+    FileForm
   },
   data() {
     return {
       paramsObj: [],
       ipAddress: "",
-      isDLP: "",
+      page: "", 
+      header_text: "ATTENTION: Access Denied", 
+      subheading_text: "The Fifth Third Bank Electronic Communications policy and Employee Policy Manual restrict access to this web page"
     };
   },
-  method: {
-  },
+  method: {},
   created() {
     //retrieve url parameters
     const params = new URLSearchParams(window.location.search);
@@ -33,16 +62,23 @@ export default {
     this.paramsObj = Array.from(paramKeys).reduce(
       (acc, key) => ({ ...acc, [key]: params.get(key) }),
       {}
-    )
+    );
 
     //check reason code to dynamically display certain page
-    if (params.get("reasoncode") == null){
-      this.isDLP = "Reason not given"
+    let reasonCode = params.get("reasoncode");
+    let category = params.get("cat");
+    if (category.includes("File host") || category.includes("Web search")) {
+      this.page = "File";
+    } else if (reasonCode.includes("DLP")) {
+      this.page = "DLP";
+      this.header_text = "Unauthorized Movement of Restricted Content",
+      this.subheading_text = "The Fifth Third Bank Information and Classification Handling Standard and Electronic Communication Policy restricts"
+        + "the unauthorized movement of sensitive data"
     } else {
-      this.isDLP = params.get("reasoncode")
+      this.page = "Proxy";
     }
-    
-    //get IP 
+
+    //get IP
     window.RTCPeerConnection =
       window.RTCPeerConnection ||
       window.mozRTCPeerConnection ||
@@ -51,48 +87,92 @@ export default {
       noop = function() {};
     pc.createDataChannel(""); //create a bogus data channel
     pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-    pc.onicecandidate = (ice) => {
+    pc.onicecandidate = ice => {
       if (ice && ice.candidate && ice.candidate.candidate) {
         this.ipAddress = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-        ice.candidate.candidate)[1];
+          ice.candidate.candidate
+        )[1];
         pc.onicecandidate = noop;
       }
     };
   }
-  
 };
 </script>
 
 <style>
 #app {
-  font-family: Arial, Verdana, Tahoma, Helvetica;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: Sans-serif;
   text-align: center;
-  margin-top: 2em;
 }
+
 html {
   font-size: 100%;
   /* IE Hack */
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh;
 }
 
 body {
   font-size: 14px;
-  background: #eef2f7;
-
+  background: rgb(255, 255, 255);
   margin: 0;
   padding: 0;
-  height: 100%;
+  height: 100vh;
 }
 
-img {
-  border: 0;
+.main {
+  margin-bottom: 2em;
 }
 
-table {
-  border: 0;
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 6.1em;
+}
+
+.logo {
+  width: 110px;
+  height: auto;
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 5em;
+  width: 100%;
+  background-color: rgb(28, 39, 88);
+  color: rgb(255, 255, 255);
+}
+
+.header {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.subheading {
+  font-size: large;
+  font-weight: bold;
+  width: 30em;
+  margin: 1.5em auto;
+}
+
+a {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  text-decoration: none;
+}
+
+.FT-btn {
+  height: 30px;
+  width: 17em;
+  border-radius: 20px;
+  color: white;
+  font-weight: 500;
+  background-color: rgb(8, 170, 102);
+  border: none;
 }
 </style>
