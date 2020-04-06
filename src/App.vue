@@ -7,16 +7,17 @@
       <div class="header-container">
         <p class="header">{{this.header_text}}</p>
       </div>
-      <p class="subheading">
-        {{this.subheading_text}}
-      </p>
-      <a
+      <p class="subheading">{{this.subheading_text}}</p>
+      <v-btn
+        rounded
+        dense
+        color="rgb(8, 170, 102)"
+        dark
         href="http://intranet.info53.com/directories/policycenter/Portal/default.asp"
         alt="Bank Policy Center"
         target="blank"
-      >
-        <button class="FT-btn">Bank Policy Center</button>
-      </a>
+        width="15em"
+      >Bank Policy Center</v-btn>
     </div>
     <div class="form">
       <proxy-form
@@ -49,9 +50,10 @@ export default {
     return {
       paramsObj: [],
       ipAddress: "",
-      page: "", 
-      header_text: "ATTENTION: Access Denied", 
-      subheading_text: "The Fifth Third Bank Electronic Communications policy and Employee Policy Manual restrict access to this web page"
+      page: "",
+      header_text: "ATTENTION: Access Denied",
+      subheading_text:
+        "The Fifth Third Bank Electronic Communications policy and Employee Policy Manual restrict access to this web page"
     };
   },
   method: {},
@@ -71,9 +73,10 @@ export default {
       this.page = "File";
     } else if (reasonCode.includes("DLP")) {
       this.page = "DLP";
-      this.header_text = "Unauthorized Movement of Restricted Content",
-      this.subheading_text = "The Fifth Third Bank Information and Classification Handling Standard and Electronic Communication Policy restricts"
-        + "the unauthorized movement of sensitive data"
+      (this.header_text = "Unauthorized Movement of Restricted Content"),
+        (this.subheading_text =
+          "The Fifth Third Bank Information and Classification Handling Standard and Electronic Communication Policy restricts" +
+          "the unauthorized movement of sensitive data");
     } else {
       this.page = "Proxy";
     }
@@ -140,7 +143,7 @@ body {
 .header-container {
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   height: 5em;
   width: 100%;
   background-color: rgb(28, 39, 88);
@@ -150,6 +153,7 @@ body {
 .header {
   font-size: x-large;
   font-weight: bold;
+
 }
 
 .subheading {
@@ -166,13 +170,4 @@ a {
   text-decoration: none;
 }
 
-.FT-btn {
-  height: 30px;
-  width: 17em;
-  border-radius: 20px;
-  color: white;
-  font-weight: 500;
-  background-color: rgb(8, 170, 102);
-  border: none;
-}
 </style>

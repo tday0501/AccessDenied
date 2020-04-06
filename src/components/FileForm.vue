@@ -1,36 +1,41 @@
 <template>
   <div>
-      <div>
-        <p class="message">
-          If you feel you have reached this page in error, and you think that
-          you are attempting to access a legitimate business site, please follow the link below to submit a
-          request. If you need further assistance, contact the Help Desk at
-          1-800-991-3441.
-          <br />
-          <br />
-        </p>
-        <a
-          href="https://thebank.info53.com/teams/InfoSec/InfoSecTeam/AS/_layouts/15/FormServer.aspx?XsnLocation=https://thebank.info53.com/teams/InfoSec/InfoSecTeam/AS/Proxy%20Entitlements/Forms/template.xsn&SaveLocation=https%3A%2F%2Fthebank%2Einfo53%2Ecom%2Fteams%2FInfoSec%2FInfoSecTeam%2FAS%2FProxy%20Entitlements&ClientInstalled=true&DefaultItemOpen=1&Source=https%3A%2F%2Fthebank.info53.com%2Fteams%2FInfoSec%2FInfoSecTeam%2FAS%2FSitePages%2FEscalated_Proxy_Requests.aspx"
-          alt="Go to the Fifth Third Bank Policy Center"
-          target="blank"
-        >
-          <button class="escalate-btn">Escalated Internet Access Request</button>
-        </a>
-      </div>
-      <div v-if="this.hasSubmitted === true ? true : false">
-        <!-- You can customize the thankyou message by editing the code below -->
-        <h2>
-          <em>Thanks</em> for contacting us! Check back here soon!
-        </h2>
-      </div>
-      <br />
-      <br />
-      <div class="notice">
-        Notice: Due to the continued current and emerging threat
-        of email based attacks on the Fifth Third network, we have determined that access to web based email
-        services will be prohibited indefinitely in accordance with the Electronic Communications Policy.
-      </div>
+    <div>
+      <p class="message">
+        If you feel you have reached this page in error, and you think that
+        you are attempting to access a legitimate business site, please follow the link below to submit a
+        request. If you need further assistance, contact the Help Desk at
+        1-800-991-3441.
+        <br />
+        <br />
+      </p>
+      <v-btn
+        rounded
+        dense
+        color="rgb(8, 170, 102)"
+        dark
+        href="https://thebank.info53.com/teams/InfoSec/InfoSecTeam/AS/_layouts/15/FormServer.aspx?XsnLocation=https://thebank.info53.com/teams/InfoSec/InfoSecTeam/AS/Proxy%20Entitlements/Forms/template.xsn&SaveLocation=https%3A%2F%2Fthebank%2Einfo53%2Ecom%2Fteams%2FInfoSec%2FInfoSecTeam%2FAS%2FProxy%20Entitlements&ClientInstalled=true&DefaultItemOpen=1&Source=https%3A%2F%2Fthebank.info53.com%2Fteams%2FInfoSec%2FInfoSecTeam%2FAS%2FSitePages%2FEscalated_Proxy_Requests.aspx"
+        alt="Bank Policy Center"
+        target="blank"
+        width="15em"
+      >Request Access</v-btn>
     </div>
+    <div v-if="this.hasSubmitted === true ? true : false">
+      <!-- You can customize the thankyou message by editing the code below -->
+      <h2>
+        <em>Thanks</em> for contacting us! Check back here soon!
+      </h2>
+    </div>
+    <br />
+    <br />
+    
+    
+    <div class="notice">
+      Notice: Due to the continued current and emerging threat
+      of email based attacks on the Fifth Third network, we have determined that access to web based email
+      services will be prohibited indefinitely in accordance with the Electronic Communications Policy.
+    </div>
+  </div>
 </template>
 
 <script>
@@ -67,22 +72,35 @@ export default {
 
 <style scoped>
 .message {
-  width: 50em;
-  margin: 1em auto
+  width: 60em;
+  margin: 2em auto;
+  text-align: left;
 }
 
-.escalate-btn {
-  height: 30px;
-  width: 17em;
-  border-radius: 20px;
-  color: white;
-  font-weight: 500;
-  background-color: rgb(8, 170, 102);
-  border: none;
+table {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.table-data {
+  text-align: right;
+  font-weight: 600;
+  padding-right: 5px;
+}
+
+.center-textarea {
+  display: flex; 
+  justify-content: center;
 }
 
 .notice {
-  text-align: center;
+  width: 60em;
+  margin: auto;
   font-weight: bold;
+}
+
+.goodbye {
+  margin-top: 3em;
 }
 </style>
