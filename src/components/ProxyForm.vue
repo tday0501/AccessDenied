@@ -23,10 +23,53 @@
       </tr>
     </table>
     <div v-if="this.hasSubmitted === false ? true : false">
-      <p class="message">
-        If you feel you have reached this page in error, and you think that you are attempting to access a legitimate business site, contact the Help Desk at 1-800-991-3441 to report the issue with the provided information above.
-      </p>
+      <p
+        class="message"
+      >  If you feel you have reached this page in error, and you think that
+        you are attempting to access a legitimate business site, please submit an explanation for your inquiry and
+        someone
+        will review your request. If you need further assistance, contact the Help Desk at
+        1-800-991-3441.</p>
+      <form v-on:submit.prevent method="POST">
+        <div class="form-elements">
+          <v-row class="center-textarea">
+            <v-col md="4" style="padding: 0;">
+              <v-textarea
+                outlined
+                filled
+                name="reason"
+                required
+                full-width="false"
+                v-model="justification"
+                label="Please provide a business justification"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+          <input type="hidden" name="url" :value="this.paramsObj.url" />
+          <input type="hidden" name="url-category" :value="this.params.cat" />
+          <input type="hidden" name="reason" :value="this.paramsObj.reason" />
+          <input type="hidden" name="employee" :value="this.paramsObj.user" />
+          <input type="hidden" name="ip-address" :value="this.ip" />
+          <v-btn
+            rounded
+            dense
+            color="rgb(8, 170, 102)"
+            dark
+            type="submit"
+            value="Submit"
+            width="15em"
+            @click="submit"
+          >Sumbit</v-btn>
+        </div>
+      </form>
     </div>
+     <div v-if="this.hasSubmitted === true ? true : false" class="goodbye">
+      <!-- You can customize the thankyou message by editing the code below -->
+      <h2>
+        <em>Thanks</em> for contacting us! Check back here soon!
+      </h2>
+    </div>
+    <br />
     <br />
     <div class="notice">
       Notice: Due to the continued current and emerging threat
@@ -50,6 +93,36 @@ export default {
     };
   },
   methods: {
+    submit() {
+      fetch("http://slgramihqaims90.info53.com:3333/api/v1/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          recipients: "tran.day@53.com",
+          subject: "Proxy Request",
+          body:
+            "<html><ul style='list-style: none'><li>Username: " +
+            this.paramsObj.user +
+            "</li><li>Url: " +
+            this.paramsObj.url +
+            "</li><li>URL Category: " +
+            this.paramsObj.cat +
+            "</li><li>IP Address: " +
+            this.ip +
+            "</li><li>Reason: " +
+            this.justification +
+            "</li></ul></html>"
+        }),
+        redirect: "follow",
+        mode: "no-cors"
+      })
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log("error", error));
+      this.hasSubmitted = !this.hasSubmitted;
+    }
   }
 };
 </script>
@@ -74,7 +147,7 @@ table {
 }
 
 .center-textarea {
-  display: flex; 
+  display: flex;
   justify-content: center;
 }
 
